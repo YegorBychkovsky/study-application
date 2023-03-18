@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: center;
+
+  .img {
+    &:hover {
+      display: none;
+    }
+    // &:hover .video {
+    //   height: 1200px;
+    // }
+  }
+
+  // .image {
+  //   video {
+  //     display: none;
+  //   }
+
+  //   &:hover video {
+  //     display: block;
+  //   }
+  // }
+}

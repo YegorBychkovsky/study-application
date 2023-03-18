@@ -1,0 +1,13 @@
+.main {
+  display: grid;
+  grid-template-columns: repeat(2, 500px);
+  justify-content: space-evenly;
+
+  padding-top: 40px;
+  padding-bottom: 40px;
+  grid-row-gap: 50px;
+
+  background: rgb(207, 207, 207);
+
+  text-align: center;
+}
