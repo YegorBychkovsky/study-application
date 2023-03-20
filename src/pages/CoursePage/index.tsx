@@ -10,8 +10,11 @@ import { useAppDispatch } from '../../redux/store';
 import styles from './CoursePage.module.scss';
 
 import Hls from 'hls.js';
+import { useNavigate } from 'react-router-dom';
 
 const CoursePage = () => {
+  const navigate = useNavigate();
+
   const appDispatch = useAppDispatch();
 
   const course = useSelector(courseSelect);
@@ -86,7 +89,7 @@ const CoursePage = () => {
       <Card
         sx={{
           maxWidth: 500,
-          height: 1600,
+          height: 700,
           position: 'relative',
         }}>
         <video
@@ -146,8 +149,13 @@ const CoursePage = () => {
             sx={{ paddingTop: '20px' }}></Typography>
         </CardContent>
         <CardActions sx={{ position: 'absolute', bottom: '10px' }}>
-          <Button size="small">Share</Button>
-          <Button size="small">Learn More</Button>
+          <Button
+            onClick={() => {
+              navigate('/');
+            }}
+            size="small">
+            Back
+          </Button>
         </CardActions>
       </Card>
     </div>

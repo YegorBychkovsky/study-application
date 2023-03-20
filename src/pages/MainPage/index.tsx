@@ -65,8 +65,9 @@ const MainPage = () => {
             </Typography>
           </CardContent>
           <CardActions sx={{ position: 'absolute', bottom: '10px' }}>
-            <Button size="small">Share</Button>
-            <Button size="small">Learn More</Button>
+            <Button onClick={() => handlerCardClick} size="small">
+              Learn More
+            </Button>
           </CardActions>
         </Card>
       ))}
