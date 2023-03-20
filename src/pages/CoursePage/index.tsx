@@ -2,7 +2,6 @@ import { Button, Card, CardActions, CardContent, Typography } from '@mui/materia
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  courseIdSelect,
   courseSelect,
   fetchingCourseById,
   firstVideoSelect,
@@ -11,56 +10,47 @@ import { useAppDispatch } from '../../redux/store';
 import styles from './CoursePage.module.scss';
 
 import Hls from 'hls.js';
-import { setInterval } from 'timers/promises';
 
 const CoursePage = () => {
-  const id = useSelector(courseIdSelect);
+  const appDispatch = useAppDispatch();
+
   const course = useSelector(courseSelect);
   const firstVideo = useSelector(firstVideoSelect);
 
-  // const [progress, setProgress] = React.useState(0);
-
-  // const handleProgress = (event: any) => {
-  //   const video = event.target;
-  //   const currentTime = video.currentTime;
-  //   setProgress(currentTime);
-  // };
-
-  // React.useEffect(() => {
-  //   localStorage.setItem('videoProgress', `${progress}`);
-  // }, [progress]);
-
-  // React.useEffect(() => {
-  //   const storedProgress = localStorage.getItem('videoProgress');
-  //   if (storedProgress) {
-  //     setProgress(parseFloat(storedProgress));
-  //   }
-  // }, []);
-
-  console.log(firstVideo);
-
+  const [currentTime, setCurrentTime] = React.useState(0);
   const [videoUrl, setVideoUrl] = React.useState(`${course?.lessons[0].link}`);
-  const appDispatch = useAppDispatch();
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  let i = 0;
 
   React.useEffect(() => {
-    appDispatch(fetchingCourseById({ id }));
+    const id = localStorage.getItem('courseId');
+    if (id) {
+      appDispatch(fetchingCourseById({ id }));
+    }
   }, []);
 
   React.useEffect(() => {
-    console.log(course);
-    console.log(firstVideo);
-
     handleMouseEnter(firstVideo);
   }, [firstVideo]);
 
-  let i = 0;
-  const videoRef = React.useRef<HTMLVideoElement>(null);
+  React.useEffect(() => {
+    localStorage.setItem(`videoProgress${videoUrl}`, String(currentTime));
+  }, [currentTime]);
+
+  const handleVideoEnd = () => {
+    setCurrentTime(0);
+  };
+
+  const handleTimeUpdate = () => {
+    setCurrentTime(videoRef.current?.currentTime || 0);
+  };
 
   const handleMouseEnter = React.useCallback(
     (videoUrl: string, duration?: number, id?: string) => {
       const video = videoRef.current;
       const config = {
-        startPosition: 1, // can be any number you want
+        startPosition: Number(localStorage.getItem(`videoProgress${videoUrl}`)) || 0, // can be any number you want
       };
       if (video) {
         if (Hls.isSupported()) {
@@ -79,11 +69,8 @@ const CoursePage = () => {
         }
       }
     },
-    // },
     [videoUrl],
   );
-
-  const video = document.createElement('video');
 
   const handleLessonClick = (status: string, url: string, duration: number, id: string) => {
     if (status === 'unlocked') {
@@ -103,10 +90,11 @@ const CoursePage = () => {
           position: 'relative',
         }}>
         <video
-          className={styles.video}
           height={300}
           ref={videoRef}
-          // onTimeUpdate={handleProgress}
+          src={videoUrl}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleVideoEnd}
           controls
         />
         <CardContent>

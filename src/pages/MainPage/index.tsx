@@ -6,7 +6,6 @@ import { useAppDispatch } from '../../redux/store';
 import Hls from 'hls.js';
 
 import styles from './MainPage.module.scss';
-import HlsPlayer from '../../components/video';
 import { useNavigate } from 'react-router-dom';
 import { CourseType } from '../../redux/slices/getCoursesSlice/types';
 import { addCourseId } from '../../redux/slices/courseSlice/slice';

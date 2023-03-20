@@ -55,6 +55,7 @@ export const GetCourseByIdSlice = createSlice({
     builder.addCase(fetchingCourseById.fulfilled, (state, action) => {
       state.course = action.payload;
       state.firstVideo = action.payload.lessons[0].link;
+      localStorage.setItem('courseId', action.payload.id);
       state.status = Status.SUCCESS;
     });
     builder.addCase(fetchingCourseById.rejected, (state) => {
