@@ -1,9 +1,16 @@
-import { Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material';
-import React, { useRef } from 'react';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  CardActions,
+  Button,
+  Stack,
+} from '@mui/material';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchingCourses, lastCoursesSelect } from '../../redux/slices/getCoursesSlice/slice';
 import { useAppDispatch } from '../../redux/store';
-import Hls from 'hls.js';
 
 import styles from './MainPage.module.scss';
 import { useNavigate } from 'react-router-dom';
@@ -13,17 +20,25 @@ import { addCourseId } from '../../redux/slices/courseSlice/slice';
 const MainPage = () => {
   const navigate = useNavigate();
 
+  const appDispatch = useAppDispatch();
   const dispatch = useDispatch();
+
+  const courses = useSelector(lastCoursesSelect);
+  const [firstIndexOfSlice, setFirstIndexOfSlice] = React.useState(0);
+  const [secondIndexOfSlice, setSecondIndexOfSlice] = React.useState(10);
+  const [numberOfPage, setNumberOfPage] = React.useState(0);
+
+  const handleChoosePageClick = (from: number, to: number) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    setFirstIndexOfSlice(from);
+    setSecondIndexOfSlice(to);
+  };
 
   const handlerCardClick = (course: CourseType) => {
     navigate(`/course/${course.id}`);
     dispatch(addCourseId(course.id));
   };
-
-  const url =
-    'https://www.youtube.com/watch?v=WonKEtdOOFE&ab_channel=%D0%A0%D0%B0%D0%B1%D0%BA%D0%BE%D1%80';
-  const appDispatch = useAppDispatch();
-  const courses = useSelector(lastCoursesSelect);
 
   React.useEffect(() => {
     appDispatch(fetchingCourses());
@@ -31,7 +46,7 @@ const MainPage = () => {
 
   return (
     <div className={styles.main}>
-      {courses.slice(0, 10).map((course: CourseType, i) => (
+      {courses.slice(firstIndexOfSlice, secondIndexOfSlice).map((course: CourseType, i) => (
         <Card
           sx={{ maxWidth: 500, height: 700, position: 'relative' }}
           key={i}
@@ -53,7 +68,7 @@ const MainPage = () => {
               variant="body2"
               color="text.secondary"
               sx={{ paddingLeft: '10%', textAlign: 'start', paddingTop: '20px', height: 120 }}>
-              {course.meta.skills.map((skill, i) => (
+              {course.meta.skills?.map((skill, i) => (
                 <b key={i}>
                   ▪️ {skill}
                   <br />
@@ -71,6 +86,17 @@ const MainPage = () => {
           </CardActions>
         </Card>
       ))}
+      <Stack spacing={2} direction="row">
+        <Button onClick={() => handleChoosePageClick(0, 10)} variant="contained">
+          1
+        </Button>
+        <Button onClick={() => handleChoosePageClick(10, 20)} variant="contained">
+          2
+        </Button>
+        <Button onClick={() => handleChoosePageClick(20, 28)} variant="contained">
+          3
+        </Button>
+      </Stack>
     </div>
   );
 };
