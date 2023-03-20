@@ -22,3 +22,6 @@ I Uploaded the project on Vercel
 
 17:23 
 Fixed some bugs
+
+17:54 
+Added pagination
