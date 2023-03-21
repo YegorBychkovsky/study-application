@@ -30,3 +30,6 @@ UPD 21.03
 
 12:05
 Сompleted an additional task (added the ability to watch a video without sound when hovering over it on the page with courses)
+
+17:10
+Added additional to change the speed of video by hotkes
