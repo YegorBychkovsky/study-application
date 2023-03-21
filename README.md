@@ -25,3 +25,8 @@ Fixed some bugs
 
 17:54 
 Added pagination
+
+UPD 21.03 
+
+12:05
+Сompleted an additional task (added the ability to watch a video without sound when hovering over it on the page with courses)
