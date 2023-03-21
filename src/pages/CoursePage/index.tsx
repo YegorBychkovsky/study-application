@@ -1,5 +1,5 @@
 import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import { useSelector } from 'react-redux';
 import {
   courseSelect,
@@ -11,6 +11,7 @@ import styles from './CoursePage.module.scss';
 
 import Hls from 'hls.js';
 import { useNavigate } from 'react-router-dom';
+import { keyboard } from '@testing-library/user-event/dist/keyboard';
 
 const CoursePage = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const CoursePage = () => {
 
   const [currentTime, setCurrentTime] = React.useState(0);
   const [videoUrl, setVideoUrl] = React.useState(`${course?.lessons[0].link}`);
+  const [videoSpeed, setVideoSpeed] = React.useState(1);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   let i = 0;
@@ -47,11 +49,13 @@ const CoursePage = () => {
 
   const handleTimeUpdate = () => {
     setCurrentTime(videoRef.current?.currentTime || 0);
+    setPlayBack();
   };
 
   const handleMouseEnter = React.useCallback(
     (videoUrl: string, duration?: number, id?: string) => {
       const video = videoRef.current;
+
       const config = {
         startPosition: Number(localStorage.getItem(`videoProgress${videoUrl}`)) || 0, // can be any number you want
       };
@@ -84,6 +88,20 @@ const CoursePage = () => {
     }
   };
 
+  const setPlayBack = React.useCallback(() => {
+    if (videoRef.current !== null) {
+      videoRef.current.playbackRate = videoSpeed;
+    }
+  }, [videoSpeed]);
+
+  const handleAnswerChange = (event: KeyboardEvent) => {
+    if (event.key === '+') {
+      setVideoSpeed(videoSpeed + 0.1);
+    } else if (event.key === '-') {
+      setVideoSpeed(videoSpeed - 0.5);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Card
@@ -98,8 +116,15 @@ const CoursePage = () => {
           src={videoUrl}
           onTimeUpdate={handleTimeUpdate}
           onEnded={handleVideoEnd}
+          onCanPlay={() => setPlayBack()}
+          onKeyDown={handleAnswerChange}
+          // onKeyPress={handleAnswerChange}
           controls
         />
+        <Typography gutterBottom variant="h6" component="div" sx={{ height: 80, fontSize: 10 }}>
+          Current video speed: {videoSpeed} <br />
+          hot keys: <br /> "+" video speed + 0.1 <br /> "-" video speed - 0.1
+        </Typography>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" sx={{ height: 80 }}>
             {course?.title}
